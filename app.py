@@ -10,6 +10,7 @@ from dash.dependencies import Input, Output, State, ClientsideFunction
 import dash_core_components as dcc
 import dash_html_components as html
 import plotly.express as px 
+import plotly.graph_objs as go
 
 PATH = pathlib.Path(__file__).parent
 DATA_PATH = PATH.joinpath("data").resolve()
@@ -23,6 +24,9 @@ server = app.server
 # Get Data
 spo2_df = pd.read_csv(DATA_PATH.joinpath("data_spo2.csv"))
 fev1_df = pd.read_csv(DATA_PATH.joinpath("data_fev1.csv"))
+peak_df = pd.read_csv(DATA_PATH.joinpath("data_peak.csv"))
+cough_df = pd.read_csv(DATA_PATH.joinpath("data_cough.csv"))
+activity_df = pd.read_csv(DATA_PATH.joinpath("data_activity.csv"))
 
 
 mapbox_access_token = "pk.eyJ1IjoicGxvdGx5bWFwYm94IiwiYSI6ImNrOWJqb2F4djBnMjEzbG50amg0dnJieG4ifQ.Zme1-Uzoi75IaFbieBDl3A"
@@ -56,15 +60,15 @@ def spyro_layout(app):
                 [
                     html.Div(
                         [
-                            html.Img(
-                                src=app.get_asset_url("dash-logo.png"),
-                                id="plotly-image",
-                                style={
-                                    "height": "60px",
-                                    "width": "auto",
-                                    "margin-bottom": "25px",
-                                },
-                            )
+                            #html.Img(
+                            #    src=app.get_asset_url("dash-logo.png"),
+                             #   id="plotly-image",
+                             #   style={
+                             #       "height": "60px",
+                             #       "width": "auto",
+                             #       "margin-bottom": "25px",
+                             #  },
+                            #)
                         ],
                         className="one-third column",
                     ),
@@ -105,61 +109,42 @@ def spyro_layout(app):
                                 "Filter by the time when the data was collected",
                                 className="control_label",
                             ),
-                            dcc.Dropdown(
+                            #dcc.Dropdown(
+                            #    id="time_slider",
+                            #    options=[
+                            #        {"label": "Last Week", "value": 1},
+                            #        {"label": "Last Month", "value": 2},
+                            #        {"label": "Last Quarter", "value": 3},
+                            #        {"label": "Last Year", "value": 4},
+                            #        {"label": "All", "value": 0},
+                            #    ],
+                            #    multi=False,
+                            #    value=2,
+                            #    className="dcc_control",
+                            #    #style={'width': "40%"}
+                            #),
+                            
+                            dcc.RadioItems(
                                 id="time_slider",
                                 options=[
-                                    {"label": "Last Week", "value": 1},
-                                    {"label": "Last Month", "value": 2},
-                                    {"label": "Last Quarter", "value": 3},
-                                    {"label": "Last Year", "value": 4},
+                                    {"label": "1W", "value": 1},
+                                    {"label": "1M" , "value": 2},
+                                    {"label": "1Q", "value": 3},
+                                    {"label": "1Y", "value": 4},
                                     {"label": "All", "value": 0},
                                 ],
-                                multi=False,
-                                value=2,
-                                className="dcc_control",
-                                #style={'width': "40%"}
-                            ),
-                            dcc.RangeSlider(
-                                id="year_slider",
-                                min=1960,
-                                max=2017,
-                                value=[1990, 2010],
-                                className="dcc_control",
-                            ),
-                            html.P("Filter by well status:", className="control_label"),
-                            dcc.RadioItems(
-                                id="well_status_selector",
-                                options=[
-                                    {"label": "All ", "value": "all"},
-                                    {"label": "Active only ", "value": "active"},
-                                    {"label": "Customize ", "value": "custom"},
-                                ],
-                                value="active",
+                                value=4,
                                 labelStyle={"display": "inline-block"},
                                 className="dcc_control",
                             ),
+
+                            #html.P("Filter by well status:", className="control_label"),
                             
-                            dcc.Checklist(
-                                id="lock_selector",
-                                options=[{"label": "Lock camera", "value": "locked"}],
-                                className="dcc_control",
-                                value=[],
-                            ),
-                            html.P("Filter by well type:", className="control_label"),
-                            dcc.RadioItems(
-                                id="well_type_selector",
-                                options=[
-                                    {"label": "All ", "value": "all"},
-                                    {"label": "Productive only ", "value": "productive"},
-                                    {"label": "Customize ", "value": "custom"},
-                                ],
-                                value="productive",
-                                labelStyle={"display": "inline-block"},
-                                className="dcc_control",
-                            ),
+                            
+                            
                             
                         ],
-                        className="pretty_container four columns",
+                        className="pretty_container six columns",
                         id="cross-filter-options",
                     ),
                     html.Div(
@@ -167,23 +152,23 @@ def spyro_layout(app):
                             html.Div(
                                 [
                                     html.Div(
-                                        [html.H6(int(spo2_df['SPO2Values'][0:1]),id="spo2_text"), html.P("SPO2")],
+                                        [html.H6(str(int(spo2_df['SPO2Values'][-1:]))+'%',id="spo2_text"), html.P("SPO2")],
                                         id="spo2",
                                         className="mini_container",
                                     ),
                                     html.Div(
-                                        [html.H6(id="peakflow_ext"), html.P("Peak Flow")],
+                                        [html.H6(int(peak_df['PEAKValues'][-1:]*100), id="peakflow_ext"), html.P("Peak Flow")],
                                         id="peakflow",
                                         className="mini_container",
                                     ),
                                     html.Div(
-                                        [html.H6(int(fev1_df['FEV1Values'][0:1]*100), id="fev1_text"), html.P("FEV1")],
+                                        [html.H6(int(fev1_df['FEV1Values'][-1:]*100), id="fev1_text"), html.P("FEV1")],
                                         id="fev1",
                                         className="mini_container",
                                     ),
                                     html.Div(
-                                        [html.H6(id="excercise_text"), html.P("Excercise")],
-                                        id="excercise",
+                                        [html.H6(cough_df['COUGHValues'][-1:], id="cough_text"), html.P("Cough Frequency")],
+                                        id="cough",
                                         className="mini_container",
                                     ),
                                 ],
@@ -197,7 +182,7 @@ def spyro_layout(app):
                             ),
                         ],
                         id="right-column",
-                        className="eight columns",
+                        className="six columns",
                     ),
                 ],
                 className="row flex-display",
@@ -205,11 +190,11 @@ def spyro_layout(app):
             html.Div(
                 [
                     html.Div(
-                        [dcc.Graph(id="main_graph")],
+                        [dcc.Graph(id="spo2_graph", figure={})],
                         className="pretty_container six columns",
                     ),
                     html.Div(
-                        [dcc.Graph(id="individual_graph")],
+                        [dcc.Graph(id="lung_graph", figure={})],
                         className="pretty_container six columns",
                     ),
                 ],
@@ -218,11 +203,11 @@ def spyro_layout(app):
             html.Div(
                 [
                     html.Div(
-                        [dcc.Graph(id="pie_graph")],
+                        [dcc.Graph(id="cough_graph", figure={})],
                         className="pretty_container six columns",
                     ),
                     html.Div(
-                        [dcc.Graph(id="aggregate_graph")],
+                        [dcc.Graph(id="activity_graph", figure={})],
                         className="pretty_container six columns",
                     ),
                 ],
@@ -237,8 +222,114 @@ def spyro_layout(app):
 app.layout = spyro_layout(app)
 
 
+def filter_frame(df, value):
+    dff = df.copy()
+    if value==1:
+        dff = dff[-7:] if len(dff)>=7 else dff
+    elif value==2:
+        dff = dff[-30:] if len(dff)>=30 else dff
+    elif value==3:
+        dff = dff[-90:] if len(dff)>=90 else dff
+    elif value==4:
+        dff = dff[-365:] if len(dff)>=365 else dff
+    return dff
+
+
+def make_lung_graph(dfs, x_columns, y_columns, names, colors=['#17EECF', '#17BECF'], title=None):
+    trace1 = go.Scatter(
+        x = dfs[0][x_columns[0]],
+        y = dfs[0][y_columns[0]],
+        name = names[0],
+        line = dict(color = colors[0]),
+        opacity = 0.8)
+    trace2 = go.Scatter(
+        x = dfs[1][x_columns[1]],
+        y = dfs[1][y_columns[1]],
+        name = names[1],
+        line = dict(color = colors[1]),
+        opacity = 0.8)
+    data = [trace1, trace2]
+
+    layout = dict(
+        title=title,
+        line_shape="spline",
+        xaxis=dict(
+            rangeselector=dict(
+                buttons=list([
+                    dict(count=1,
+                        label='1m',
+                        step='month',
+                        stepmode='backward'),
+                    dict(count=3,
+                        label='3m',
+                        step='month',
+                        stepmode='backward'),
+                    dict(count=6,
+                        label='6m',
+                        step='month',
+                        stepmode='backward'),
+                    dict(count=12,
+                        label='1Y',
+                        step='month',
+                        stepmode='backward'),
+                    dict(step='all')
+                ])
+            ),
+            rangeslider=dict(),
+            type='date'
+        )
+    )
+
+    fig = dict(data=data, layout=layout)
+    return fig
+
+def make_go_graph(df, x_column, y_column, title = None, name=None, color = '#17BECF'):
+    trace = go.Scatter(
+        x = df[x_column],
+        y = df[y_column],
+        name = name,
+        line = dict(color = color),
+        opacity = 0.8)
+    data = [trace]
+    layout = dict(
+        title=title,
+        line_shape="spline",
+        xaxis=dict(
+            rangeselector=dict(
+                buttons=list([
+                    dict(count=1,
+                        label='1m',
+                        step='month',
+                        stepmode='backward'),
+                    dict(count=3,
+                        label='3m',
+                        step='month',
+                        stepmode='backward'),
+                    dict(count=6,
+                        label='6m',
+                        step='month',
+                        stepmode='backward'),
+                    dict(count=12,
+                        label='1Y',
+                        step='month',
+                        stepmode='backward'),
+                    dict(step='all')
+                ])
+            ),
+            rangeslider=dict(),
+            type='date'
+        )
+    )
+
+    fig = dict(data=data, layout=layout)
+    return fig
+
 @app.callback(
-    [Output('score_graph', 'figure')],
+    [Output('score_graph', 'figure'),
+     Output('spo2_graph', 'figure'),
+     Output('lung_graph', 'figure'),
+     Output('cough_graph', 'figure'),
+     Output('activity_graph', 'figure')],
     [Input(component_id='time_slider', component_property='value')]
 )
 def score_graph_(option_slctd):
@@ -246,28 +337,35 @@ def score_graph_(option_slctd):
     print(type(option_slctd))
     
     spo2_dff = spo2_df.copy()
+    fev1_dff = fev1_df.copy()
     
-    
-    if option_slctd==1:
-        spo2_dff = spo2_dff[-7:] if len(spo2_dff)>=7 else spo2_dff
-    elif option_slctd==2:
-        spo2_dff = spo2_dff[-30:] if len(spo2_dff)>=30 else spo2_dff
-    elif option_slctd==3:
-        spo2_dff = spo2_dff[-90:] if len(spo2_dff)>=90 else spo2_dff
-    elif option_slctd==4:
-        spo2_dff = spo2_dff[-365:] if len(spo2_dff)>=365 else spo2_dff
+    spo2_dff = filter_frame(spo2_df, option_slctd)
+    fev1_dff = filter_frame(fev1_df, option_slctd)
+    peak_dff = filter_frame(peak_df, option_slctd)
+    cough_dff = filter_frame(cough_df, option_slctd)
+    activity_dff = filter_frame(activity_df, option_slctd)
     
 
 
     #templates: ["plotly", "plotly_white", "plotly_dark", "ggplot2", "seaborn", "simple_white", "none"]
-    fig_spo2 = px.line(spo2_dff,
+    '''fig_spo2 = px.line(spo2_dff,
                        x='Date',
                        y='SPO2Values', 
                        template = "plotly",
                        title = "SPO2 Values over time")
-    fig_spo2.update_xaxes(rangeslider_visible=True)
+    #fig_spo2.add_scatter(fev1_dff, x='Date', y='FEV1Values')'''
+    #fig_spo2.update_xaxes(rangeslider_visible=True)
 
-    return [fig_spo2]
+    
+
+    #fig_spo2 = dict(data=data, layout=layout)
+    fig_spo2 = make_go_graph(spo2_dff, 'Date', 'SPO2Values', title = "SPO2 Values", name=None, color = '#17BECF')
+    fig_fev1 = make_go_graph(fev1_dff, 'Date', 'FEV1Values', title = "FEV1 Values", name=None, color = '#17BECF')
+    #fig_peak = make_go_graph(peak_dff, 'Date', 'PEAKValues', title = "Peak Flow Values", name=None, color = '#17BECF')
+    fig_lung = make_lung_graph([fev1_dff, peak_dff], ['Date', 'Date'], ['FEV1Values', 'PEAKValues'], ['FEV1', 'Peak Flow'], colors=['#06EECF', '#17BECF'], title="Lung Functions")
+    fig_cough = make_go_graph(cough_dff, 'Date', 'COUGHValues', title = "Cough Counts", name=None, color = '#17BECF')
+    fig_activity = make_go_graph(activity_dff, 'Date', 'ACTIVITYValues', title = "Active Minutes", name=None, color = '#17BECF')
+    return [fig_spo2, fig_fev1, fig_lung, fig_cough, fig_activity]
 
 
 

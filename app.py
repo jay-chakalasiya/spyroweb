@@ -46,172 +46,217 @@ layout = dict(
     ),
 )
 
-
 graph_layout = html.Div(
-        [
-            dcc.Store(id="aggregate_data"),
-            # empty Div to trigger javascript file for graph resizing
-            html.Div(id="output-clientside"),
-            html.Div(
-                [
-                    html.Div(
-                        [
-                            # html.Img(
-                            #    src=app.get_asset_url("dash-logo.png"),
-                            #   id="plotly-image",
-                            #   style={
-                            #       "height": "60px",
-                            #       "width": "auto",
-                            #       "margin-bottom": "25px",
-                            #  },
-                            # )
-                        ],
-                        className="one-third column",
-                    ),
-                    html.Div(
-                        [
-                            html.Div(
-                                [
-                                    html.H3(
-                                        "Spyro.ai",
-                                        style={"margin-bottom": "0px"},
-                                    ),
-                                    html.H5(
-                                        "Respiratory Monitoring System", style={"margin-top": "0px"}
-                                    ),
-                                ]
-                            )
-                        ],
-                        className="one-half column",
-                        id="title",
-                    ),
-                    html.Div(
-                        [
+    [
+        dcc.Store(id="aggregate_data"),
+        # empty Div to trigger javascript file for graph resizing
+        html.Div(id="output-clientside"),
+        html.Div(
+            [
+                html.Div(
+                    [
+                        # html.Img(
+                        #    src=app.get_asset_url("dash-logo.png"),
+                        #   id="plotly-image",
+                        #   style={
+                        #       "height": "60px",
+                        #       "width": "auto",
+                        #       "margin-bottom": "25px",
+                        #  },
+                        # )
+                    ],
+                    className="one-third column",
+                ),
+                html.Div(
+                    [
+                        html.Div(
+                            [
+                                html.H3(
+                                    "Spyro.ai",
+                                    style={"margin-bottom": "0px"},
+                                ),
+                                html.H5(
+                                    "Respiratory Monitoring System", style={"margin-top": "0px"}
+                                ),
+                            ]
+                        )
+                    ],
+                    className="one-half column",
+                    id="title",
+                ),
+                html.Div(
+                    [
 
-                        ],
-                        className="one-third column",
-                        id="button",
-                    ),
-                ],
-                id="header",
-                className="row flex-display",
-                style={"margin-bottom": "25px"},
-            ),
-            html.Div(
-                [
-                    html.Div(
-                        [
-                            html.P(
-                                "Filter by the time when the data was collected",
-                                className="control_label",
-                            ),
-                            # dcc.Dropdown(
-                            #    id="time_slider",
-                            #    options=[
-                            #        {"label": "Last Week", "value": 1},
-                            #        {"label": "Last Month", "value": 2},
-                            #        {"label": "Last Quarter", "value": 3},
-                            #        {"label": "Last Year", "value": 4},
-                            #        {"label": "All", "value": 0},
-                            #    ],
-                            #    multi=False,
-                            #    value=2,
-                            #    className="dcc_control",
-                            #    #style={'width': "40%"}
-                            # ),
-
-                            dcc.RadioItems(
-                                id="time_slider",
-                                options=[
-                                    {"label": "1W", "value": 1},
-                                    {"label": "1M", "value": 2},
-                                    {"label": "1Q", "value": 3},
-                                    {"label": "1Y", "value": 4},
-                                    {"label": "All", "value": 0},
-                                ],
-                                value=4,
-                                labelStyle={"display": "inline-block"},
-                                className="dcc_control",
-                            ),
-
-                            # html.P("Filter by well status:", className="control_label"),
-
-                        ],
-                        className="pretty_container six columns",
-                        id="cross-filter-options",
-                    ),
-                    html.Div(
-                        [
-                            html.Div(
-                                [dcc.Graph(id="score_graph", figure={})],
-                                id="countGraphContainer",
-                                className="pretty_container",
-                            ),
-                        ],
-                        id="right-column",
-                        className="six columns",
-                    ),
-                ],
-                className="row flex-display",
-            ),
-            html.Div(
-                [
-                    html.Div(
-                        [dcc.Graph(id="spo2_graph", figure={})],
-                        className="pretty_container six columns",
-                    ),
-                    html.Div(
-                        [dcc.Graph(id="lung_graph", figure={})],
-                        className="pretty_container six columns",
-                    ),
-                ],
-                className="row flex-display",
-            ),
-            html.Div(
-                [
-                    html.Div(
-                        [dcc.Graph(id="cough_graph", figure={})],
-                        className="pretty_container six columns",
-                    ),
-                    html.Div(
-                        [dcc.Graph(id="activity_graph", figure={})],
-                        className="pretty_container six columns",
-                    ),
-                ],
-                className="row flex-display",
-            ),
-        ],
-        id="mainContainer",
-        style={"display": "flex", "flex-direction": "column"},
-    )
-
-
-page_2_layout =  html.Div([
-        html.H1('Page 2'),
-        dcc.RadioItems(
-            id='page-2-radios',
-            options=[{'label': i, 'value': i} for i in ['Orange', 'Blue', 'Red']],
-            value='Orange'
+                    ],
+                    className="one-third column",
+                    id="button",
+                ),
+            ],
+            id="header",
+            className="row flex-display",
+            style={"margin-bottom": "25px"},
         ),
-        html.Div(id='page-2-content'),
-        html.Br(),
-        dcc.Link('Go to Page 1', href='/page-1'),
-        html.Br(),
-        dcc.Link('Go back to home', href='/')
+        html.Div(
+            [
+                html.Div(
+                    [
+                        html.P(
+                            "Filter by the time when the data was collected",
+                            className="control_label",
+                        ),
+                        # dcc.Dropdown(
+                        #    id="time_slider",
+                        #    options=[
+                        #        {"label": "Last Week", "value": 1},
+                        #        {"label": "Last Month", "value": 2},
+                        #        {"label": "Last Quarter", "value": 3},
+                        #        {"label": "Last Year", "value": 4},
+                        #        {"label": "All", "value": 0},
+                        #    ],
+                        #    multi=False,
+                        #    value=2,
+                        #    className="dcc_control",
+                        #    #style={'width': "40%"}
+                        # ),
+
+                        dcc.RadioItems(
+                            id="time_slider",
+                            options=[
+                                {"label": "1W", "value": 1},
+                                {"label": "1M", "value": 2},
+                                {"label": "1Q", "value": 3},
+                                {"label": "1Y", "value": 4},
+                                {"label": "All", "value": 0},
+                            ],
+                            value=4,
+                            labelStyle={"display": "inline-block"},
+                            className="dcc_control",
+                        ),
+
+                        # html.P("Filter by well status:", className="control_label"),
+
+                    ],
+                    className="pretty_container six columns",
+                    id="cross-filter-options",
+                ),
+                html.Div(
+                    [
+                        html.Div(
+                            [dcc.Graph(id="score_graph", figure={})],
+                            id="countGraphContainer",
+                            className="pretty_container",
+                        ),
+                    ],
+                    id="right-column",
+                    className="six columns",
+                ),
+            ],
+            className="row flex-display",
+        ),
+        html.Div(
+            [
+                html.Div(
+                    [dcc.Graph(id="spo2_graph", figure={})],
+                    className="pretty_container six columns",
+                ),
+                html.Div(
+                    [dcc.Graph(id="lung_graph", figure={})],
+                    className="pretty_container six columns",
+                ),
+            ],
+            className="row flex-display",
+        ),
+        html.Div(
+            [
+                html.Div(
+                    [dcc.Graph(id="cough_graph", figure={})],
+                    className="pretty_container six columns",
+                ),
+                html.Div(
+                    [dcc.Graph(id="activity_graph", figure={})],
+                    className="pretty_container six columns",
+                ),
+            ],
+            className="row flex-display",
+        ),
+    ],
+    id="mainContainer",
+    style={"display": "flex", "flex-direction": "column"},
+)
+
+page_2_layout = html.Div([
+    html.H1('Page 2'),
+    html.H3('Determine'),
+    html.Table([
+        html.Tr(
+            [
+                html.Td(''),
+                html.Td('Green', colSpan=2),
+                html.Td('Yellow', colSpan=2),
+                html.Td('Red', colSpan=2)
+            ]
+        ),
+        html.Tr(
+            [
+                html.Td(''),
+                html.Td('min'),
+                html.Td('max'),
+                html.Td('min'),
+                html.Td('max'),
+                html.Td('min'),
+                html.Td('max')
+            ]
+        ),
+        html.Tr(
+            [
+                html.Td('FEV'),
+                html.Td(
+                    [
+                        dcc.Input(id="input1", type="text", placeholder="")
+                    ]
+                ),
+                html.Td(
+                    [
+                        dcc.Input(id="input1", type="text", placeholder="")
+                    ]
+                ),
+                html.Td(
+                    [
+                        dcc.Input(id="input1", type="text", placeholder="")
+                    ]
+                ),
+                html.Td(
+                    [
+                        dcc.Input(id="input1", type="text", placeholder="")
+                    ]
+                ),
+                html.Td(
+                    [
+                        dcc.Input(id="input1", type="text", placeholder="")
+                    ]
+                ),
+                html.Td(
+                    [
+                        dcc.Input(id="input1", type="text", placeholder="")
+                    ]
+                )
+            ]
+        ),
     ])
 
+])
 
 index_page = html.Div([
-        dcc.Link('Go to Page 1', href='/page-1'),
-        html.Br(),
-        dcc.Link('Go to Page 2', href='/page-2'),
-    ])
-
+    dcc.Link('Go to Page 1', href='/page-1'),
+    html.Br(),
+    dcc.Link('Go to Page 2', href='/page-2'),
+])
 
 app.layout = html.Div([
     dcc.Location(id='url', refresh=False),
     html.Div(id='page-content')
 ])
+
 
 @app.callback(dash.dependencies.Output('page-content', 'children'),
               [dash.dependencies.Input('url', 'pathname')])

@@ -9,6 +9,7 @@ dash-renderer==1.4.1
 dash-table==4.7.0
 numpy==1.17.1
 pandas==0.24.2
+plotly
 
 
 

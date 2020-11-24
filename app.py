@@ -16,7 +16,7 @@ PATH = pathlib.Path(__file__).parent
 DATA_PATH = PATH.joinpath("data").resolve()
 
 app = dash.Dash(
-    __name__, meta_tags=[{"name": "viewport", "content": "width=device-width"}]
+    __name__, meta_tags=[{"name": "viewport", "content": "width=device-width"}], suppress_callback_exceptions=True
 )
 server = app.server
 
@@ -47,8 +47,7 @@ layout = dict(
 )
 
 
-def spyro_layout(app):
-    return html.Div(
+graph_layout = html.Div(
         [
             dcc.Store(id="aggregate_data"),
             # empty Div to trigger javascript file for graph resizing
@@ -144,36 +143,6 @@ def spyro_layout(app):
                     html.Div(
                         [
                             html.Div(
-                                [
-                                    html.Div(
-                                        [html.H6(str(int(spo2_df['SPO2Values'][-1:])) + '%', id="spo2_text"),
-                                         html.P("SPO2")],
-                                        id="spo2",
-                                        className="mini_container",
-                                    ),
-                                    html.Div(
-                                        [html.H6(int(peak_df['PEAKValues'][-1:] * 100), id="peakflow_ext"),
-                                         html.P("Peak Flow")],
-                                        id="peakflow",
-                                        className="mini_container",
-                                    ),
-                                    html.Div(
-                                        [html.H6(int(fev1_df['FEV1Values'][-1:] * 100), id="fev1_text"),
-                                         html.P("FEV1")],
-                                        id="fev1",
-                                        className="mini_container",
-                                    ),
-                                    html.Div(
-                                        [html.H6(cough_df['COUGHValues'][-1:], id="cough_text"),
-                                         html.P("Cough Frequency")],
-                                        id="cough",
-                                        className="mini_container",
-                                    ),
-                                ],
-                                id="info-container",
-                                className="row container-display",
-                            ),
-                            html.Div(
                                 [dcc.Graph(id="score_graph", figure={})],
                                 id="countGraphContainer",
                                 className="pretty_container",
@@ -217,7 +186,42 @@ def spyro_layout(app):
     )
 
 
-app.layout = spyro_layout(app)
+page_2_layout =  html.Div([
+        html.H1('Page 2'),
+        dcc.RadioItems(
+            id='page-2-radios',
+            options=[{'label': i, 'value': i} for i in ['Orange', 'Blue', 'Red']],
+            value='Orange'
+        ),
+        html.Div(id='page-2-content'),
+        html.Br(),
+        dcc.Link('Go to Page 1', href='/page-1'),
+        html.Br(),
+        dcc.Link('Go back to home', href='/')
+    ])
+
+
+index_page = html.Div([
+        dcc.Link('Go to Page 1', href='/page-1'),
+        html.Br(),
+        dcc.Link('Go to Page 2', href='/page-2'),
+    ])
+
+
+app.layout = html.Div([
+    dcc.Location(id='url', refresh=False),
+    html.Div(id='page-content')
+])
+
+@app.callback(dash.dependencies.Output('page-content', 'children'),
+              [dash.dependencies.Input('url', 'pathname')])
+def display_page(pathname):
+    if pathname == '/page-1':
+        return graph_layout
+    elif pathname == '/page-2':
+        return page_2_layout
+    else:
+        return index_page
 
 
 def filter_frame(df, value):

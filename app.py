@@ -51,6 +51,7 @@ graph_layout = html.Div(
         dcc.Store(id="aggregate_data"),
         # empty Div to trigger javascript file for graph resizing
         html.Div(id="output-clientside"),
+        dcc.Link('Go to plan screen', href='/plan'),
         html.Div(
             [
                 html.Div(
@@ -184,7 +185,9 @@ graph_layout = html.Div(
     style={"display": "flex", "flex-direction": "column"},
 )
 
-page_2_layout = html.Form([
+plan_layout = html.Form([
+
+    dcc.Link('Go to graph screen', href='/'),
     html.H1('Treatment Plan'),
     html.H3('Zone Values'),
     html.Table([
@@ -680,12 +683,6 @@ page_2_layout = html.Form([
     html.Button('Submit', type='submit')
 ], action='http://10.0.0.179:3000/unsecured/recordPlanTest', method='post')
 
-index_page = html.Div([
-    dcc.Link('Go to Page 1', href='/page-1'),
-    html.Br(),
-    dcc.Link('Go to Page 2', href='/page-2'),
-])
-
 app.layout = html.Div([
     dcc.Location(id='url', refresh=False),
     html.Div(id='page-content')
@@ -695,12 +692,10 @@ app.layout = html.Div([
 @app.callback(dash.dependencies.Output('page-content', 'children'),
               [dash.dependencies.Input('url', 'pathname')])
 def display_page(pathname):
-    if pathname == '/page-1':
-        return graph_layout
-    elif pathname == '/page-2':
-        return page_2_layout
+    if pathname == '/plan':
+        return plan_layout
     else:
-        return index_page
+        return graph_layout
 
 
 def filter_frame(df, value):

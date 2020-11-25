@@ -184,16 +184,16 @@ graph_layout = html.Div(
     style={"display": "flex", "flex-direction": "column"},
 )
 
-page_2_layout = html.Div([
-    html.H1('Page 2'),
-    html.H3('Determine'),
+page_2_layout = html.Form([
+    html.H1('Treatment Plan'),
+    html.H3('Zone Values'),
     html.Table([
         html.Tr(
             [
                 html.Td(''),
-                html.Td('Green', colSpan=2),
-                html.Td('Yellow', colSpan=2),
-                html.Td('Red', colSpan=2)
+                html.Td('Green Zone', colSpan=2),
+                html.Td('Yellow Zone', colSpan=2),
+                html.Td('Red Zone', colSpan=2)
             ]
         ),
         html.Tr(
@@ -212,39 +212,473 @@ page_2_layout = html.Div([
                 html.Td('FEV'),
                 html.Td(
                     [
-                        dcc.Input(id="input1", type="text", placeholder="")
+                        dcc.Input(name="fev_green_rangeLow", type="text", placeholder="")
                     ]
                 ),
                 html.Td(
                     [
-                        dcc.Input(id="input1", type="text", placeholder="")
+                        dcc.Input(name="fev_green_rangeHigh", type="text", placeholder="")
                     ]
                 ),
                 html.Td(
                     [
-                        dcc.Input(id="input1", type="text", placeholder="")
+                        dcc.Input(name="fev_yellow_rangeLow", type="text", placeholder="")
                     ]
                 ),
                 html.Td(
                     [
-                        dcc.Input(id="input1", type="text", placeholder="")
+                        dcc.Input(name="fev_yellow_rangeHigh", type="text", placeholder="")
                     ]
                 ),
                 html.Td(
                     [
-                        dcc.Input(id="input1", type="text", placeholder="")
+                        dcc.Input(name="fev_red_rangeLow", type="text", placeholder="")
                     ]
                 ),
                 html.Td(
                     [
-                        dcc.Input(id="input1", type="text", placeholder="")
+                        dcc.Input(name="fev_red_rangeHigh", type="text", placeholder="")
                     ]
                 )
             ]
         ),
-    ])
+        html.Tr(
+            [
+                html.Td('PEF'),
+                html.Td(
+                    [
+                        dcc.Input(name="pef_green_rangeLow", type="text", placeholder="")
+                    ]
+                ),
+                html.Td(
+                    [
+                        dcc.Input(name="pef_green_rangeHigh", type="text", placeholder="")
+                    ]
+                ),
+                html.Td(
+                    [
+                        dcc.Input(name="pef_yellow_rangeLow", type="text", placeholder="")
+                    ]
+                ),
+                html.Td(
+                    [
+                        dcc.Input(name="pef_yellow_rangeHigh", type="text", placeholder="")
+                    ]
+                ),
+                html.Td(
+                    [
+                        dcc.Input(name="pef_red_rangeLow", type="text", placeholder="")
+                    ]
+                ),
+                html.Td(
+                    [
+                        dcc.Input(name="pef_red_rangeHigh", type="text", placeholder="")
+                    ]
+                )
+            ]
+        ),
+        html.Tr(
+            [
+                html.Td('O2'),
+                html.Td(
+                    [
+                        dcc.Input(name="o2_green_rangeLow", type="text", placeholder="")
+                    ]
+                ),
+                html.Td(
+                    [
+                        dcc.Input(name="o2_green_rangeHigh", type="text", placeholder="")
+                    ]
+                ),
+                html.Td(
+                    [
+                        dcc.Input(name="o2_yellow_rangeLow", type="text", placeholder="")
+                    ]
+                ),
+                html.Td(
+                    [
+                        dcc.Input(name="o2_yellow_rangeHigh", type="text", placeholder="")
+                    ]
+                ),
+                html.Td(
+                    [
+                        dcc.Input(name="o2_red_rangeLow", type="text", placeholder="")
+                    ]
+                ),
+                html.Td(
+                    [
+                        dcc.Input(name="o2_red_rangeHigh", type="text", placeholder="")
+                    ]
+                )
+            ]
+        ),
+        html.Tr(
+            [
+                html.Td('Pulse'),
+                html.Td(
+                    [
+                        dcc.Input(name="pulse_green_rangeLow", type="text", placeholder="")
+                    ]
+                ),
+                html.Td(
+                    [
+                        dcc.Input(name="pulse_green_rangeHigh", type="text", placeholder="")
+                    ]
+                ),
+                html.Td(
+                    [
+                        dcc.Input(name="pulse_yellow_rangeLow", type="text", placeholder="")
+                    ]
+                ),
+                html.Td(
+                    [
+                        dcc.Input(name="pulse_yellow_rangeHigh", type="text", placeholder="")
+                    ]
+                ),
+                html.Td(
+                    [
+                        dcc.Input(name="pulse_red_rangeLow", type="text", placeholder="")
+                    ]
+                ),
+                html.Td(
+                    [
+                        dcc.Input(name="pulse_red_rangeHigh", type="text", placeholder="")
+                    ]
+                )
+            ]
+        ),
+        html.Tr(
+            [
+                html.Td('Activity Goal %'),
+                html.Td(
+                    [
+                        dcc.Input(name="activityGoalPercentage_green_rangeLow", type="text", placeholder="")
+                    ]
+                ),
+                html.Td(
+                    [
+                        dcc.Input(name="activityGoalPercentage_green_rangeHigh", type="text", placeholder="")
+                    ]
+                ),
+                html.Td(
+                    [
+                        dcc.Input(name="activityGoalPercentage_yellow_rangeLow", type="text", placeholder="")
+                    ]
+                ),
+                html.Td(
+                    [
+                        dcc.Input(name="activityGoalPercentage_yellow_rangeHigh", type="text", placeholder="")
+                    ]
+                ),
+                html.Td(
+                    [
+                        dcc.Input(name="activityGoalPercentage_red_rangeLow", type="text", placeholder="")
+                    ]
+                ),
+                html.Td(
+                    [
+                        dcc.Input(name="activityGoalPercentage_red_rangeHigh", type="text", placeholder="")
+                    ]
+                )
+            ]
+        ),
+        html.Tr(
+            [
+                html.Td('Sleep'),
+                html.Td(
+                    [
+                        dcc.Input(name="totalSleepMinutes_green_rangeLow", type="text", placeholder="")
+                    ]
+                ),
+                html.Td(
+                    [
+                        dcc.Input(name="totalSleepMinutes_green_rangeHigh", type="text", placeholder="")
+                    ]
+                ),
+                html.Td(
+                    [
+                        dcc.Input(name="totalSleepMinutes_yellow_rangeLow", type="text", placeholder="")
+                    ]
+                ),
+                html.Td(
+                    [
+                        dcc.Input(name="totalSleepMinutes_yellow_rangeHigh", type="text", placeholder="")
+                    ]
+                ),
+                html.Td(
+                    [
+                        dcc.Input(name="totalSleepMinutes_red_rangeLow", type="text", placeholder="")
+                    ]
+                ),
+                html.Td(
+                    [
+                        dcc.Input(name="totalSleepMinutes_red_rangeHigh", type="text", placeholder="")
+                    ]
+                )
+            ]
+        ),
+    ]),
+    html.H3('Medications'),
+    html.Table([
+        html.Tr(
+            [
+                html.Td('Name'),
+                html.Td('Quantity Type'),
+                html.Td('Green Zone'),
+                html.Td('Yellow Zone'),
+                html.Td('Red Zone'),
+            ]
+        ),
 
-])
+        html.Tr(
+            [
+
+                html.Td(
+                    [
+                        dcc.Input(name="medicines_name_1", type="text", placeholder="")
+                    ]
+                ),
+                html.Td(
+                    [
+                        dcc.Input(name="medicines_quantityType_1", type="text", placeholder="")
+                    ]
+                ),
+                html.Td(
+                    [
+                        dcc.Input(name="medicines_green_quantity_1", type="text", placeholder="quantity")
+                    ]
+                ),
+                html.Td(
+                    [
+                        dcc.Input(name="medicines_yellow_quantity_1", type="text", placeholder="quantity")
+                    ]
+                ),
+                html.Td(
+                    [
+                        dcc.Input(name="medicines_red_quantity_1", type="text", placeholder="quantity")
+                    ]
+                ),
+            ],
+        ),
+        html.Tr(
+            [
+
+                html.Td(''),
+                html.Td(''),
+                html.Td(
+                    [
+                        dcc.Input(name="medicines_green_timeOfDay_1", type="text", placeholder="time of day")
+                    ]
+                ),
+                html.Td(
+                    [
+                        dcc.Input(name="medicines_yellow_timeOfDay_1", type="text", placeholder="time of day")
+                    ]
+                ),
+                html.Td(
+                    [
+                        dcc.Input(name="medicines_red_timeOfDay_1", type="text", placeholder="time of day")
+                    ]
+                )
+            ],
+        ),
+
+        html.Tr(
+            [
+
+                html.Td(
+                    [
+                        dcc.Input(name="medicines_name_2", type="text", placeholder="")
+                    ]
+                ),
+                html.Td(
+                    [
+                        dcc.Input(name="medicines_quantityType_2", type="text", placeholder="")
+                    ]
+                ),
+                html.Td(
+                    [
+                        dcc.Input(name="medicines_green_quantity_2", type="text", placeholder="quantity")
+                    ]
+                ),
+                html.Td(
+                    [
+                        dcc.Input(name="medicines_yellow_quantity_2", type="text", placeholder="quantity")
+                    ]
+                ),
+                html.Td(
+                    [
+                        dcc.Input(name="medicines_red_quantity_2", type="text", placeholder="quantity")
+                    ]
+                ),
+            ],
+        ),
+        html.Tr(
+            [
+
+                html.Td(''),
+                html.Td(''),
+                html.Td(
+                    [
+                        dcc.Input(name="medicines_green_timeOfDay_2", type="text", placeholder="time of day")
+                    ]
+                ),
+                html.Td(
+                    [
+                        dcc.Input(name="medicines_yellow_timeOfDay_2", type="text", placeholder="time of day")
+                    ]
+                ),
+                html.Td(
+                    [
+                        dcc.Input(name="medicines_red_timeOfDay_2", type="text", placeholder="time of day")
+                    ]
+                )
+            ],
+        ),
+
+        html.Tr(
+            [
+
+                html.Td(
+                    [
+                        dcc.Input(name="medicines_name_3", type="text", placeholder="")
+                    ]
+                ),
+                html.Td(
+                    [
+                        dcc.Input(name="medicines_quantityType_3", type="text", placeholder="")
+                    ]
+                ),
+                html.Td(
+                    [
+                        dcc.Input(name="medicines_green_quantity_3", type="text", placeholder="quantity")
+                    ]
+                ),
+                html.Td(
+                    [
+                        dcc.Input(name="medicines_yellow_quantity_3", type="text", placeholder="quantity")
+                    ]
+                ),
+                html.Td(
+                    [
+                        dcc.Input(name="medicines_red_quantity_3", type="text", placeholder="quantity")
+                    ]
+                ),
+            ],
+        ),
+        html.Tr(
+            [
+
+                html.Td(''),
+                html.Td(''),
+                html.Td(
+                    [
+                        dcc.Input(name="medicines_green_timeOfDay_3", type="text", placeholder="time of day")
+                    ]
+                ),
+                html.Td(
+                    [
+                        dcc.Input(name="medicines_yellow_timeOfDay_3", type="text", placeholder="time of day")
+                    ]
+                ),
+                html.Td(
+                    [
+                        dcc.Input(name="medicines_red_timeOfDay_3", type="text", placeholder="time of day")
+                    ]
+                )
+            ],
+        )
+
+    ]),
+    html.H3('Measurements'),
+    html.Table([
+        html.Tr(
+            [
+                html.Td('Name'),
+                html.Td('Green Zone Frequency'),
+                html.Td('Yellow Zone Frequency'),
+                html.Td('Red Zone Frequency'),
+            ]
+        ),
+
+        html.Tr(
+            [
+                html.Td(
+                    [
+                        dcc.Input(name="measurements_typeName_1", type="text", placeholder="")
+                    ]
+                ),
+                html.Td(
+                    [
+                        dcc.Input(name="measurements_green_frequency_1", type="text", placeholder="")
+                    ]
+                ),
+                html.Td(
+                    [
+                        dcc.Input(name="measurements_yellow_frequency_1", type="text", placeholder="")
+                    ]
+                ),
+                html.Td(
+                    [
+                        dcc.Input(name="measurements_red_frequency_1", type="text", placeholder="")
+                    ]
+                ),
+
+            ],
+        ),
+        html.Tr(
+            [
+                html.Td(
+                    [
+                        dcc.Input(name="measurements_typeName_2", type="text", placeholder="")
+                    ]
+                ),
+                html.Td(
+                    [
+                        dcc.Input(name="measurements_green_frequency_2", type="text", placeholder="")
+                    ]
+                ),
+                html.Td(
+                    [
+                        dcc.Input(name="measurements_yellow_frequency_2", type="text", placeholder="")
+                    ]
+                ),
+                html.Td(
+                    [
+                        dcc.Input(name="measurements_red_frequency_2", type="text", placeholder="")
+                    ]
+                ),
+
+            ],
+        ),
+        html.Tr(
+            [
+                html.Td(
+                    [
+                        dcc.Input(name="measurements_typeName_3", type="text", placeholder="")
+                    ]
+                ),
+                html.Td(
+                    [
+                        dcc.Input(name="measurements_green_frequency_3", type="text", placeholder="")
+                    ]
+                ),
+                html.Td(
+                    [
+                        dcc.Input(name="measurements_yellow_frequency_3", type="text", placeholder="")
+                    ]
+                ),
+                html.Td(
+                    [
+                        dcc.Input(name="measurements_red_frequency_3", type="text", placeholder="")
+                    ]
+                ),
+
+            ],
+        ),
+    ]),
+    html.Button('Submit', type='submit')
+], action='http://10.0.0.179:3000/unsecured/recordPlanTest', method='post')
 
 index_page = html.Div([
     dcc.Link('Go to Page 1', href='/page-1'),

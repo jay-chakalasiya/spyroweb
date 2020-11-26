@@ -48,10 +48,10 @@ layout = dict(
 
 graph_layout = html.Div(
     [
+        html.Button(dcc.Link('Go to plan screen', href='/plan'), id="graph_screen_button"),
         dcc.Store(id="aggregate_data"),
         # empty Div to trigger javascript file for graph resizing
         html.Div(id="output-clientside"),
-        dcc.Link('Go to plan screen', href='/plan'),
         html.Div(
             [
                 html.Div(
@@ -186,8 +186,7 @@ graph_layout = html.Div(
 )
 
 plan_layout = html.Form([
-
-    dcc.Link('Go to graph screen', href='/'),
+    html.Button(dcc.Link('Go to graph screen', href='/'), id="plan_screen_button"),
     html.H1('Treatment Plan'),
     html.H3('Zone Values'),
     html.Table([
@@ -680,8 +679,9 @@ plan_layout = html.Form([
             ],
         ),
     ]),
+    html.Br(),
     html.Button('Submit', type='submit')
-], action='http://10.0.0.179:3000/unsecured/recordPlanTest', method='post')
+], action='http://127.0.0.1:3000/unsecured/recordPlanTest', method='post')
 
 app.layout = html.Div([
     dcc.Location(id='url', refresh=False),

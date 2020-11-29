@@ -1,16 +1,16 @@
-# Import required libraries
-# import pickle
-# import copy
+
 import pathlib
 import dash
-# import math
-# import datetime as dt
 import pandas as pd
 from dash.dependencies import Input, Output, State, ClientsideFunction
 import dash_core_components as dcc
 import dash_html_components as html
-# import plotly.express as px
 import plotly.graph_objs as go
+
+
+from graphs import make_go_graph, make_lung_graph
+from database import db_mock, db_transform
+from config import graph_config
 
 PATH = pathlib.Path(__file__).parent
 DATA_PATH = PATH.joinpath("data").resolve()
@@ -20,31 +20,12 @@ app = dash.Dash(
 )
 server = app.server
 
-# Get Data
-spo2_df = pd.read_csv(DATA_PATH.joinpath("data_spo2.csv"))
-fev1_df = pd.read_csv(DATA_PATH.joinpath("data_fev1.csv"))
-peak_df = pd.read_csv(DATA_PATH.joinpath("data_peak.csv"))
-cough_df = pd.read_csv(DATA_PATH.joinpath("data_cough.csv"))
-activity_df = pd.read_csv(DATA_PATH.joinpath("data_activity.csv"))
+database = db_mock()#db_transform("mongodb://10.0.0.179:27017", 'spyro', '5f7f85757391fd43388dd7c0')
+config = graph_config()
+
 
 mapbox_access_token = "pk.eyJ1IjoicGxvdGx5bWFwYm94IiwiYSI6ImNrOWJqb2F4djBnMjEzbG50amg0dnJieG4ifQ.Zme1-Uzoi75IaFbieBDl3A"
 
-layout = dict(
-    autosize=True,
-    automargin=True,
-    margin=dict(l=30, r=30, b=20, t=40),
-    hovermode="closest",
-    plot_bgcolor="#F9F9F9",
-    paper_bgcolor="#F9F9F9",
-    legend=dict(font=dict(size=10), orientation="h"),
-    title="Satellite Overview",
-    mapbox=dict(
-        accesstoken=mapbox_access_token,
-        style="light",
-        center=dict(lon=-78.05, lat=42.54),
-        zoom=7,
-    ),
-)
 
 graph_layout = html.Div(
     [
@@ -56,15 +37,6 @@ graph_layout = html.Div(
             [
                 html.Div(
                     [
-                        # html.Img(
-                        #    src=app.get_asset_url("dash-logo.png"),
-                        #   id="plotly-image",
-                        #   style={
-                        #       "height": "60px",
-                        #       "width": "auto",
-                        #       "margin-bottom": "25px",
-                        #  },
-                        # )
                     ],
                     className="one-third column",
                 ),
@@ -105,20 +77,6 @@ graph_layout = html.Div(
                             "Filter by the time when the data was collected",
                             className="control_label",
                         ),
-                        # dcc.Dropdown(
-                        #    id="time_slider",
-                        #    options=[
-                        #        {"label": "Last Week", "value": 1},
-                        #        {"label": "Last Month", "value": 2},
-                        #        {"label": "Last Quarter", "value": 3},
-                        #        {"label": "Last Year", "value": 4},
-                        #        {"label": "All", "value": 0},
-                        #    ],
-                        #    multi=False,
-                        #    value=2,
-                        #    className="dcc_control",
-                        #    #style={'width': "40%"}
-                        # ),
 
                         dcc.RadioItems(
                             id="time_slider",
@@ -134,34 +92,12 @@ graph_layout = html.Div(
                             className="dcc_control",
                         ),
 
-                        # html.P("Filter by well status:", className="control_label"),
-
                     ],
                     className="pretty_container six columns",
                     id="cross-filter-options",
                 ),
                 html.Div(
-                    [
-                        html.Div(
-                            [dcc.Graph(id="score_graph", figure={})],
-                            id="countGraphContainer",
-                            className="pretty_container",
-                        ),
-                    ],
-                    id="right-column",
-                    className="six columns",
-                ),
-            ],
-            className="row flex-display",
-        ),
-        html.Div(
-            [
-                html.Div(
-                    [dcc.Graph(id="spo2_graph", figure={})],
-                    className="pretty_container six columns",
-                ),
-                html.Div(
-                    [dcc.Graph(id="lung_graph", figure={})],
+                    [dcc.Graph(id="lung_function_graph", figure={})],
                     className="pretty_container six columns",
                 ),
             ],
@@ -170,11 +106,24 @@ graph_layout = html.Div(
         html.Div(
             [
                 html.Div(
-                    [dcc.Graph(id="cough_graph", figure={})],
+                    [dcc.Graph(id="o2_graph", figure={})],
                     className="pretty_container six columns",
                 ),
+                html.Div(
+                    [dcc.Graph(id="pulse_graph", figure={})],
+                    className="pretty_container six columns",
+                ),
+            ],
+            className="row flex-display",
+        ),
+        html.Div(
+            [
                 html.Div(
                     [dcc.Graph(id="activity_graph", figure={})],
+                    className="pretty_container six columns",
+                ),
+                html.Div(
+                    [dcc.Graph(id="sleep_graph", figure={})],
                     className="pretty_container six columns",
                 ),
             ],
@@ -698,152 +647,63 @@ def display_page(pathname):
         return graph_layout
 
 
-def filter_frame(df, value):
-    dff = df.copy()
-    if value == 1:
-        dff = dff[-7:] if len(dff) >= 7 else dff
-    elif value == 2:
-        dff = dff[-30:] if len(dff) >= 30 else dff
-    elif value == 3:
-        dff = dff[-90:] if len(dff) >= 90 else dff
-    elif value == 4:
-        dff = dff[-365:] if len(dff) >= 365 else dff
-    return dff
-
-
-def make_lung_graph(dfs, x_columns, y_columns, names, colors=None, title=None):
-    if colors is None:
-        colors = ['#17EECF', '#17BECF']
-    trace1 = go.Scatter(
-        x=dfs[0][x_columns[0]],
-        y=dfs[0][y_columns[0]],
-        name=names[0],
-        line=dict(color=colors[0]),
-        opacity=0.8)
-    trace2 = go.Scatter(
-        x=dfs[1][x_columns[1]],
-        y=dfs[1][y_columns[1]],
-        name=names[1],
-        line=dict(color=colors[1]),
-        opacity=0.8)
-    data = [trace1, trace2]
-
-    layout = dict(
-        title=title,
-        line_shape="spline",
-        xaxis=dict(
-            rangeselector=dict(
-                buttons=list([
-                    dict(count=1,
-                         label='1m',
-                         step='month',
-                         stepmode='backward'),
-                    dict(count=3,
-                         label='3m',
-                         step='month',
-                         stepmode='backward'),
-                    dict(count=6,
-                         label='6m',
-                         step='month',
-                         stepmode='backward'),
-                    dict(count=12,
-                         label='1Y',
-                         step='month',
-                         stepmode='backward'),
-                    dict(step='all')
-                ])
-            ),
-            rangeslider=dict(),
-            type='date'
-        )
-    )
-
-    fig = dict(data=data, layout=layout)
-    return fig
-
-
-def make_go_graph(df, x_column, y_column, title=None, name=None, color='#17BECF'):
-    trace = go.Scatter(
-        x=df[x_column],
-        y=df[y_column],
-        name=name,
-        line=dict(color=color),
-        opacity=0.8)
-    data = [trace]
-    layout = dict(
-        title=title,
-        line_shape="spline",
-        xaxis=dict(
-            rangeselector=dict(
-                buttons=list([
-                    dict(count=1,
-                         label='1m',
-                         step='month',
-                         stepmode='backward'),
-                    dict(count=3,
-                         label='3m',
-                         step='month',
-                         stepmode='backward'),
-                    dict(count=6,
-                         label='6m',
-                         step='month',
-                         stepmode='backward'),
-                    dict(count=12,
-                         label='1Y',
-                         step='month',
-                         stepmode='backward'),
-                    dict(step='all')
-                ])
-            ),
-            rangeslider=dict(),
-            type='date'
-        )
-    )
-
-    fig = dict(data=data, layout=layout)
-    return fig
-
 
 @app.callback(
-    [Output('score_graph', 'figure'),
-     Output('spo2_graph', 'figure'),
-     Output('lung_graph', 'figure'),
-     Output('cough_graph', 'figure'),
-     Output('activity_graph', 'figure')],
+    [Output('lung_function_graph', 'figure'),
+     Output('o2_graph', 'figure'),
+     Output('pulse_graph', 'figure'),
+     Output('activity_graph', 'figure'),
+     Output('sleep_graph', 'figure')],
     [Input(component_id='time_slider', component_property='value')]
 )
 def score_graph_(option_slctd):
-    print(option_slctd)
-    print(type(option_slctd))
 
-    spo2_dff = spo2_df.copy()
-    fev1_dff = fev1_df.copy()
+    fig_O2 = make_go_graph(
+        database.data[option_slctd]['O2'],
+        config.cols['index_col'],
+        config.cols['O2'],
+        title=config.titles['O2'],
+        name=None,
+        color='#17BECF'
+    )
 
-    spo2_dff = filter_frame(spo2_df, option_slctd)
-    fev1_dff = filter_frame(fev1_df, option_slctd)
-    peak_dff = filter_frame(peak_df, option_slctd)
-    cough_dff = filter_frame(cough_df, option_slctd)
-    activity_dff = filter_frame(activity_df, option_slctd)
+    fig_PULSE = make_go_graph(
+        database.data[option_slctd]['PULSE'],
+        config.cols['index_col'],
+        config.cols['PULSE'],
+        title=config.titles['PULSE'],
+        name=None,
+        color='#17BECF'
+    )
 
-    # templates: ["plotly", "plotly_white", "plotly_dark", "ggplot2", "seaborn", "simple_white", "none"]
-    '''fig_spo2 = px.line(spo2_dff,
-                       x='Date',
-                       y='SPO2Values', 
-                       template = "plotly",
-                       title = "SPO2 Values over time")
-    #fig_spo2.add_scatter(fev1_dff, x='Date', y='FEV1Values')'''
-    # fig_spo2.update_xaxes(rangeslider_visible=True)
+    fig_LUNG_FUNCTION = make_lung_graph(
+        [database.data[option_slctd]['FEV1'], database.data[option_slctd]['PEF']],
+        [config.cols['index_col'], config.cols['index_col']],
+        [config.cols['FEV1'], config.cols['PEF']],
+        ['FEV1', 'Peak Flow'],
+        colors=['#06EECF', '#17BECF'],
+        title=config.titles['LUNG_GRAPH']
+    )
 
-    # fig_spo2 = dict(data=data, layout=layout)
-    fig_spo2 = make_go_graph(spo2_dff, 'Date', 'SPO2Values', title="SPO2 Values", name=None, color='#17BECF')
-    fig_fev1 = make_go_graph(fev1_dff, 'Date', 'FEV1Values', title="FEV1 Values", name=None, color='#17BECF')
-    # fig_peak = make_go_graph(peak_dff, 'Date', 'PEAKValues', title = "Peak Flow Values", name=None, color = '#17BECF')
-    fig_lung = make_lung_graph([fev1_dff, peak_dff], ['Date', 'Date'], ['FEV1Values', 'PEAKValues'],
-                               ['FEV1', 'Peak Flow'], colors=['#06EECF', '#17BECF'], title="Lung Functions")
-    fig_cough = make_go_graph(cough_dff, 'Date', 'COUGHValues', title="Cough Counts", name=None, color='#17BECF')
-    fig_activity = make_go_graph(activity_dff, 'Date', 'ACTIVITYValues', title="Active Minutes", name=None,
-                                 color='#17BECF')
-    return [fig_spo2, fig_fev1, fig_lung, fig_cough, fig_activity]
+    fig_SLEEP = make_go_graph(
+        database.data[option_slctd]['SLEEP'],
+        config.cols['index_col'],
+        config.cols['SLEEP'],
+        title=config.titles['SLEEP'],
+        name=None,
+        color='#17BECF'
+    )
+
+    fig_ACTIVITY = make_go_graph(
+        database.data[option_slctd]['ACTIVITY'],
+        config.cols['index_col'],
+        config.cols['ACTIVITY'],
+        title=config.titles['ACTIVITY'],
+        name=None,
+        color='#17BECF'
+    )
+
+    return [fig_LUNG_FUNCTION, fig_O2, fig_PULSE, fig_ACTIVITY, fig_SLEEP]
 
 
 # Main

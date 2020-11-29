@@ -163,32 +163,32 @@ plan_layout = html.Form([
                 html.Td('FEV'),
                 html.Td(
                     [
-                        dcc.Input(name="fev_green_rangeLow", type="text", placeholder="")
+                        dcc.Input(name="fev1_green_rangeLow", type="text", placeholder="")
                     ]
                 ),
                 html.Td(
                     [
-                        dcc.Input(name="fev_green_rangeHigh", type="text", placeholder="")
+                        dcc.Input(name="fev1_green_rangeHigh", type="text", placeholder="")
                     ]
                 ),
                 html.Td(
                     [
-                        dcc.Input(name="fev_yellow_rangeLow", type="text", placeholder="")
+                        dcc.Input(name="fev1_yellow_rangeLow", type="text", placeholder="")
                     ]
                 ),
                 html.Td(
                     [
-                        dcc.Input(name="fev_yellow_rangeHigh", type="text", placeholder="")
+                        dcc.Input(name="fev1_yellow_rangeHigh", type="text", placeholder="")
                     ]
                 ),
                 html.Td(
                     [
-                        dcc.Input(name="fev_red_rangeLow", type="text", placeholder="")
+                        dcc.Input(name="fev1_red_rangeLow", type="text", placeholder="")
                     ]
                 ),
                 html.Td(
                     [
-                        dcc.Input(name="fev_red_rangeHigh", type="text", placeholder="")
+                        dcc.Input(name="fev1_red_rangeHigh", type="text", placeholder="")
                     ]
                 )
             ]

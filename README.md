@@ -1,8 +1,8 @@
 # spyroweb
 
+<div style="text-align: center;">
 <img src="https://github.com/jay-chakalasiya/spyroweb/raw/main/assets/screenshots/Spyrologo.png" alt="drawing" width="200"/>
-
-![spyroai logo](assets/screenshots/Spyrologo.png)
+</div>
 
 ![Dashboard](assets/screenshots/Dashboard.PNG)
 

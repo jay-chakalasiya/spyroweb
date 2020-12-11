@@ -1,0 +1,31 @@
+
+Root
+|   .gitignore
+|   app.py
+|   config.py
+|   controls.py
+|   database.py
+|   Dockerfile
+|   explore.ipynb
+|   file_structure.txt
+|   graphs.py
+|   Procfile
+|   README.md
+|   requirements.txt
+|
++---assets
+|       dash-logo.png
+|       resizing_script.js
+|       s1.css
+|       styles.css
+|       
++---data
+|       dash-logo copy.png
+|       data_activity.csv
+|       data_fev1.csv
+|       data_o2.csv
+|       data_pef.csv
+|       data_pulse.csv
+|       data_sleep.csv
+
+        
